@@ -4,10 +4,10 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-8 offset-md-2">
+    <div class="col-md-10 offset-md-1">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Mi Perfil</h2>
+                <h2 class="mb-0">Mi Perfil Académico</h2>
             </div>
             <div class="card-body">
                 <form method="post" action="{{ url_for('main.profile') }}">
@@ -27,41 +27,106 @@
                                 <input type="date" class="form-control" id="birth_date" name="birth_date" value="{{ student.birth_date or '' }}">
                             </div>
                             <div class="mb-3">
-                                <label for="grade" class="form-label">Grado</label>
+                                <label for="grade" class="form-label">Curso</label>
                                 <select class="form-select" id="grade" name="grade" required>
-                                    <option value="">Seleccionar grado</option>
-                                    <option value="5to de secundaria" {% if student.grade == "5to de secundaria" %}selected{% endif %}>5to de secundaria</option>
-                                    <option value="6to de secundaria" {% if student.grade == "6to de secundaria" %}selected{% endif %}>6to de secundaria</option>
+                                    <option value="">Seleccionar curso</option>
+                                    <option value="4to de secundaria" {% if student.grade == "4to de secundaria" %}selected{% endif %}>4to de Secundaria</option>
+                                    <option value="5to de secundaria" {% if student.grade == "5to de secundaria" %}selected{% endif %}>5to de Secundaria</option>
+                                    <option value="6to de secundaria" {% if student.grade == "6to de secundaria" %}selected{% endif %}>6to de Secundaria</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="school" class="form-label">Colegio</label>
+                                <label for="school" class="form-label">Unidad Educativa</label>
                                 <input type="text" class="form-control" id="school" name="school" value="{{ student.school or '' }}">
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <h3>Rendimiento Académico</h3>
-                            <p class="text-muted">Registra tus calificaciones en escala del 1 al 10</p>
+                            <h3>Calificaciones Académicas</h3>
+                            <p class="text-muted">Registra tus calificaciones en escala de 1 a 100 puntos</p>
                             
-                            <div class="mb-3">
-                                <label for="math_score" class="form-label">Matemáticas</label>
-                                <input type="number" class="form-control" id="math_score" name="math_score" min="1" max="10" step="0.1" value="{{ student.math_score or '' }}">
+                            <h5>Área de Matemáticas y Ciencias Exactas</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="matematicas_score" class="form-label">Matemáticas</label>
+                                    <input type="number" class="form-control" id="matematicas_score" name="matematicas_score" 
+                                           min="1" max="100" value="{{ student.matematicas_score or '' }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fisica_score" class="form-label">Física</label>
+                                    <input type="number" class="form-control" id="fisica_score" name="fisica_score" 
+                                           min="1" max="100" value="{{ student.fisica_score or '' }}">
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label for="science_score" class="form-label">Ciencias</label>
-                                <input type="number" class="form-control" id="science_score" name="science_score" min="1" max="10" step="0.1" value="{{ student.science_score or '' }}">
+                                <label for="quimica_score" class="form-label">Química</label>
+                                <input type="number" class="form-control" id="quimica_score" name="quimica_score" 
+                                       min="1" max="100" value="{{ student.quimica_score or '' }}">
                             </div>
+                            
+                            <h5>Área de Ciencias Naturales</h5>
                             <div class="mb-3">
-                                <label for="language_score" class="form-label">Lenguaje</label>
-                                <input type="number" class="form-control" id="language_score" name="language_score" min="1" max="10" step="0.1" value="{{ student.language_score or '' }}">
+                                <label for="biologia_score" class="form-label">Biología/Ciencias Naturales</label>
+                                <input type="number" class="form-control" id="biologia_score" name="biologia_score" 
+                                       min="1" max="100" value="{{ student.biologia_score or '' }}">
                             </div>
-                            <div class="mb-3">
-                                <label for="social_science_score" class="form-label">Ciencias Sociales</label>
-                                <input type="number" class="form-control" id="social_science_score" name="social_science_score" min="1" max="10" step="0.1" value="{{ student.social_science_score or '' }}">
+                            
+                            <h5>Área de Comunicación y Lenguaje</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="lenguaje_score" class="form-label">Lenguaje y Comunicación</label>
+                                    <input type="number" class="form-control" id="lenguaje_score" name="lenguaje_score" 
+                                           min="1" max="100" value="{{ student.lenguaje_score or '' }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ingles_score" class="form-label">Inglés/Lengua Extranjera</label>
+                                    <input type="number" class="form-control" id="ingles_score" name="ingles_score" 
+                                           min="1" max="100" value="{{ student.ingles_score or '' }}">
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Área de Ciencias Sociales</h5>
                             <div class="mb-3">
-                                <label for="arts_score" class="form-label">Arte</label>
-                                <input type="number" class="form-control" id="arts_score" name="arts_score" min="1" max="10" step="0.1" value="{{ student.arts_score or '' }}">
+                                <label for="ciencias_sociales_score" class="form-label">Ciencias Sociales</label>
+                                <input type="number" class="form-control" id="ciencias_sociales_score" name="ciencias_sociales_score" 
+                                       min="1" max="100" value="{{ student.ciencias_sociales_score or '' }}">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="filosofia_score" class="form-label">Filosofía/Psicología</label>
+                                    <input type="number" class="form-control" id="filosofia_score" name="filosofia_score" 
+                                           min="1" max="100" value="{{ student.filosofia_score or '' }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="valores_score" class="form-label">Valores/Religión</label>
+                                    <input type="number" class="form-control" id="valores_score" name="valores_score" 
+                                           min="1" max="100" value="{{ student.valores_score or '' }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Área Artística y Expresiva</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="artes_plasticas_score" class="form-label">Artes Plásticas y Visuales</label>
+                                    <input type="number" class="form-control" id="artes_plasticas_score" name="artes_plasticas_score" 
+                                           min="1" max="100" value="{{ student.artes_plasticas_score or '' }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="educacion_musical_score" class="form-label">Educación Musical</label>
+                                    <input type="number" class="form-control" id="educacion_musical_score" name="educacion_musical_score" 
+                                           min="1" max="100" value="{{ student.educacion_musical_score or '' }}">
+                                </div>
+                            </div>
+                            
+                            <h5>Educación Física</h5>
+                            <div class="mb-3">
+                                <label for="educacion_fisica_score" class="form-label">Educación Física</label>
+                                <input type="number" class="form-control" id="educacion_fisica_score" name="educacion_fisica_score" 
+                                       min="1" max="100" value="{{ student.educacion_fisica_score or '' }}">
                             </div>
                         </div>
                     </div>
@@ -74,4 +139,21 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Validación para calificaciones (1-100)
+    const scoreInputs = document.querySelectorAll('input[type="number"]');
+    
+    scoreInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const value = parseInt(this.value);
+            if (value < 1) this.value = 1;
+            if (value > 100) this.value = 100;
+        });
+    });
+});
+</script>
 {% endblock %}

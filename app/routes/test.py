@@ -10,6 +10,7 @@ import json
 import numpy as np
 from datetime import datetime
 
+# Crear el blueprint
 bp = Blueprint('test', __name__, url_prefix='/test')
 
 @bp.route('/start')
@@ -18,6 +19,10 @@ def start_test():
     """Página de inicio del test vocacional"""
     # Verificar si el estudiante ya ha realizado el test
     student = Student.query.filter_by(user_id=current_user.id).first()
+    if not student:
+        flash('Debes completar tu perfil antes de realizar el test.', 'warning')
+        return redirect(url_for('main.profile'))
+    
     existing_test = TestAnswer.query.filter_by(student_id=student.id).first()
     
     if existing_test:
@@ -106,6 +111,14 @@ def process_results():
         # Guardar respuestas del test en la base de datos
         student = Student.query.filter_by(user_id=current_user.id).first()
         
+        # Eliminar test anterior si existe
+        existing_test = TestAnswer.query.filter_by(student_id=student.id).first()
+        if existing_test:
+            db.session.delete(existing_test)
+        
+        # Eliminar recomendaciones anteriores
+        Recommendation.query.filter_by(student_id=student.id).delete()
+        
         # Crear objeto de respuesta
         test_answer = TestAnswer(
             student_id=student.id,
@@ -173,50 +186,50 @@ def process_results():
         
     except Exception as e:
         # En caso de error, mostrar mensaje y registrar el error
+        db.session.rollback()
         flash(f'Ocurrió un error al procesar los resultados: {str(e)}', 'danger')
         print(f"Error en process_results: {e}")
         return redirect(url_for('test.start_test'))
-    
-# No modificamos estas funciones, las dejamos igual
+
 def calculate_compatibility(student, career, area_code, scores):
-    """Calcular la compatibilidad entre un estudiante y una carrera basado en el área y notas"""
+    """Calcular la compatibilidad entre un estudiante y una carrera basado en el área y notas (Sistema Boliviano)"""
     # Obtener puntaje del área
     area_score = scores[area_code]['total'] / 10.0  # Normalizar a escala 0-1
     
-    # Mapear áreas a las materias relacionadas
+    # Mapear áreas CHASIDE a las materias bolivianas relacionadas
     area_subject_mapping = {
-        'C': ['math_score', 'social_science_score'],
-        'H': ['language_score', 'social_science_score'],
-        'A': ['arts_score', 'language_score'],
-        'S': ['science_score', 'math_score'],
-        'I': ['math_score', 'science_score'],
-        'D': ['social_science_score', 'math_score'],
-        'E': ['science_score', 'math_score']
+        'C': ['matematicas_score', 'ciencias_sociales_score'],  # Administrativas
+        'H': ['lenguaje_score', 'ciencias_sociales_score', 'filosofia_score'],  # Humanísticas
+        'A': ['artes_plasticas_score', 'educacion_musical_score'],  # Artísticas
+        'S': ['biologia_score', 'quimica_score'],  # Salud
+        'I': ['matematicas_score', 'fisica_score', 'quimica_score'],  # Ingeniería
+        'D': ['ciencias_sociales_score', 'educacion_fisica_score'],  # Defensa
+        'E': ['fisica_score', 'quimica_score', 'biologia_score']  # Ciencias exactas
     }
     
-    # Calcular promedio de notas relacionadas al área
+    # Calcular promedio de notas relacionadas al área (sistema boliviano 1-100)
     related_subjects = area_subject_mapping.get(area_code, [])
     subject_scores = []
     
     # Recopilar las puntuaciones de las materias, asegurando que no hay None
     for subject in related_subjects:
         score = getattr(student, subject, None)
-        if score is not None:  # Solo agregar si no es None
+        if score is not None and score > 0:  # Solo agregar si no es None y mayor que 0
             subject_scores.append(score)
         else:
-            subject_scores.append(0.0)  # Valor predeterminado si es None
+            subject_scores.append(51.0)  # Valor por defecto (51/100 = aprobatorio mínimo)
     
     # Calcular promedio de forma segura
-    avg_subject_score = sum(subject_scores) / len(subject_scores) if subject_scores else 0.0
+    avg_subject_score = sum(subject_scores) / len(subject_scores) if subject_scores else 51.0
     
-    # Normalizar a escala 0-1
-    normalized_subject_score = avg_subject_score / 10.0
+    # Normalizar a escala 0-1 (51 es el mínimo aprobatorio en Bolivia)
+    # Rango: 51-100 -> 0-1
+    normalized_subject_score = max((avg_subject_score - 51) / 49.0, 0.0)  # (score - 51) / (100 - 51)
     
     # Calcular puntuación de compatibilidad (combinar test y notas)
     compatibility = (area_score * 0.7) + (normalized_subject_score * 0.3)
     
     # Ajustar según el peso de la carrera en ese área
-    # Asegurarse de que el área existe en la carrera
     area_attr = f'area_{area_code.lower()}'
     area_weight = getattr(career, area_attr, 0.0)
     
@@ -251,6 +264,10 @@ def test_results():
     """Mostrar resultados del test y recomendaciones"""
     student = Student.query.filter_by(user_id=current_user.id).first()
     
+    if not student:
+        flash('Debes completar tu perfil antes de ver los resultados.', 'warning')
+        return redirect(url_for('main.profile'))
+    
     # Verificar si ha realizado el test
     test_answers = TestAnswer.query.filter_by(student_id=student.id).order_by(TestAnswer.test_date.desc()).first()
     
@@ -272,6 +289,8 @@ def test_results():
     recommendations = Recommendation.query.filter_by(student_id=student.id).order_by(Recommendation.score.desc()).all()
     
     # Generar gráfico de radar para visualización
+    radar_chart = None
+    bar_chart = None
     try:
         from app.utils.chart_generator import ChartGenerator
         radar_chart = ChartGenerator.generate_radar_chart(scores)
@@ -286,8 +305,6 @@ def test_results():
         bar_chart = ChartGenerator.generate_bar_chart(career_scores)
     except Exception as e:
         print(f"Error generando gráficos: {e}")
-        radar_chart = None
-        bar_chart = None
     
     # Preparar datos para visualización
     test_chaside = TestChaside()
@@ -327,6 +344,10 @@ def test_results():
 def retake_test():
     """Volver a realizar el test vocacional"""
     student = Student.query.filter_by(user_id=current_user.id).first()
+    
+    if not student:
+        flash('Debes completar tu perfil primero.', 'warning')
+        return redirect(url_for('main.profile'))
     
     # Eliminar test y recomendaciones anteriores
     TestAnswer.query.filter_by(student_id=student.id).delete()

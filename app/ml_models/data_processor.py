@@ -10,11 +10,11 @@ class DataProcessor:
     
     def __init__(self):
         self.scaler = StandardScaler()
-        self.encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+        self.encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
         
     def prepare_student_data(self, student, test_answers):
         """
-        Prepara los datos de un estudiante para que sean utilizados por los modelos ML
+        Prepara los datos de un estudiante para que sean utilizados por los modelos ML (Sistema Boliviano)
         
         Args:
             student: Objeto Student de la base de datos
@@ -23,13 +23,20 @@ class DataProcessor:
         Returns:
             DataFrame: Datos del estudiante procesados
         """
+        # Calcular promedios por área según el sistema boliviano
+        areas_averages = student.get_average_by_area()
+        
         # Recopilar datos del estudiante
         student_data = {
-            'math_score': student.math_score if student.math_score else 5.0,
-            'science_score': student.science_score if student.science_score else 5.0,
-            'language_score': student.language_score if student.language_score else 5.0,
-            'social_science_score': student.social_science_score if student.social_science_score else 5.0,
-            'arts_score': student.arts_score if student.arts_score else 5.0,
+            # Promedios por área (normalizados de 0-100 a 0-1)
+            'matematicas_exactas_avg': areas_averages.get('matematicas_exactas', 51) / 100.0,
+            'ciencias_naturales_avg': areas_averages.get('ciencias_naturales', 51) / 100.0,
+            'comunicacion_lenguaje_avg': areas_averages.get('comunicacion_lenguaje', 51) / 100.0,
+            'ciencias_sociales_avg': areas_averages.get('ciencias_sociales', 51) / 100.0,
+            'artes_expresion_avg': areas_averages.get('artes_expresion', 51) / 100.0,
+            'educacion_fisica_avg': areas_averages.get('educacion_fisica', 51) / 100.0,
+            
+            # Puntajes CHASIDE
             'score_c': test_answers.score_c,
             'score_h': test_answers.score_h,
             'score_a': test_answers.score_a,
@@ -42,12 +49,8 @@ class DataProcessor:
         # Convertir a DataFrame
         student_df = pd.DataFrame([student_data])
         
-        # Normalizar datos numéricos
-        numerical_cols = ['math_score', 'science_score', 'language_score', 
-                         'social_science_score', 'arts_score',
-                         'score_c', 'score_h', 'score_a', 'score_s', 
-                         'score_i', 'score_d', 'score_e']
-        
+        # Normalizar datos numéricos usando StandardScaler
+        numerical_cols = list(student_data.keys())
         student_df[numerical_cols] = self.scaler.fit_transform(student_df[numerical_cols])
         
         return student_df
@@ -82,17 +85,18 @@ class DataProcessor:
         career_df = pd.DataFrame(career_data)
         
         # Codificar facultad con one-hot encoding
-        faculty_encoded = self.encoder.fit_transform(career_df[['faculty_id']])
-        faculty_df = pd.DataFrame(
-            faculty_encoded, 
-            columns=[f'faculty_{i}' for i in range(faculty_encoded.shape[1])]
-        )
-        
-        # Unir datos
-        career_df = pd.concat([
-            career_df.drop('faculty_id', axis=1),
-            faculty_df
-        ], axis=1)
+        if len(career_df) > 0:
+            faculty_encoded = self.encoder.fit_transform(career_df[['faculty_id']])
+            faculty_df = pd.DataFrame(
+                faculty_encoded, 
+                columns=[f'faculty_{i}' for i in range(faculty_encoded.shape[1])]
+            )
+            
+            # Unir datos
+            career_df = pd.concat([
+                career_df.drop('faculty_id', axis=1),
+                faculty_df
+            ], axis=1)
         
         return career_df
     
@@ -109,7 +113,10 @@ class DataProcessor:
         if not test_answers.answers_json:
             return {}
         
-        return json.loads(test_answers.answers_json)
+        try:
+            return json.loads(test_answers.answers_json)
+        except json.JSONDecodeError:
+            return {}
     
     def get_feature_importance(self, student_data, model):
         """
