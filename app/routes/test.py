@@ -87,39 +87,44 @@ def comenzar_test():
     # Redirigir a la primera pregunta
     return redirect(url_for('test.question', question_number=1))
 
+# REEMPLAZA LA FUNCIÓN process_results EN: app/routes/test.py
+
 @bp.route('/process-results')
 @login_required
 def process_results():
-    """Procesar los resultados del test y generar recomendaciones"""
-    # Verificar si hay respuestas en la sesión
+    """Procesar resultados con INTEGRACIÓN ML MEJORADA"""
+    
+    # Verificar respuestas
     if 'answers' not in session or not session['answers']:
         flash('No hay respuestas para procesar. Por favor, realiza el test.', 'warning')
         return redirect(url_for('test.start_test'))
     
-    # Obtener respuestas y procesar test
     answers = session.get('answers', {})
     
-    # Verificar que haya suficientes respuestas
-    if len(answers) < 50:  # Al menos la mitad de las preguntas
+    if len(answers) < 50:
         flash('Por favor, completa más preguntas antes de procesar los resultados.', 'warning')
         return redirect(url_for('test.question', question_number=len(answers)+1))
     
     try:
+        print(f"🔄 Procesando {len(answers)} respuestas con IA...")
+        
+        # Procesar test CHASIDE
         test_chaside = TestChaside()
         scores = test_chaside.calculate_scores(answers)
         
-        # Guardar respuestas del test en la base de datos
+        # Obtener estudiante
         student = Student.query.filter_by(user_id=current_user.id).first()
+        if not student:
+            flash('Error: No se encontró el perfil del estudiante.', 'danger')
+            return redirect(url_for('main.profile'))
         
-        # Eliminar test anterior si existe
+        # Limpiar datos anteriores
         existing_test = TestAnswer.query.filter_by(student_id=student.id).first()
         if existing_test:
             db.session.delete(existing_test)
-        
-        # Eliminar recomendaciones anteriores
         Recommendation.query.filter_by(student_id=student.id).delete()
         
-        # Crear objeto de respuesta
+        # Crear respuesta del test
         test_answer = TestAnswer(
             student_id=student.id,
             score_c=scores['C']['total'],
@@ -134,63 +139,196 @@ def process_results():
         db.session.add(test_answer)
         db.session.flush()
         
-        # Obtener áreas recomendadas
-        recommended_areas = test_chaside.get_recommended_areas(scores, top_n=2)
-        print(f"Áreas recomendadas: {recommended_areas}")
+        print(f"✅ Test guardado: C={scores['C']['total']}, I={scores['I']['total']}, S={scores['S']['total']}")
         
-        # Generar recomendaciones de carreras
-        for area_code, score in recommended_areas:
-            # Buscar carreras con alto peso en esta área
+        # 🤖 GENERAR RECOMENDACIONES CON IA MEJORADA
+        try:
+            print("🤖 Generando recomendaciones con ML...")
+            from app.utils.career_matcher import CareerMatcher
+            
+            career_matcher = CareerMatcher()
+            recommendations = career_matcher.generate_recommendations(
+                student, test_answer, top_n=5
+            )
+            
+            if recommendations:
+                print(f"✅ {len(recommendations)} recomendaciones con IA generadas")
+            else:
+                print("⚠️ Usando método de respaldo...")
+                recommendations = generate_fallback_recommendations(student, test_answer, scores)
+                
+        except Exception as e:
+            print(f"⚠️ Error en IA, usando respaldo: {e}")
+            recommendations = generate_fallback_recommendations(student, test_answer, scores)
+        
+        # Guardar recomendaciones
+        for recommendation in recommendations:
+            db.session.add(recommendation)
+        
+        db.session.commit()
+        session.pop('answers', None)
+        
+        flash('¡Test completado! Recomendaciones generadas con Inteligencia Artificial.', 'success')
+        return redirect(url_for('test.test_results'))
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Error: {e}")
+        flash('Error procesando resultados. Inténtalo de nuevo.', 'danger')
+        return redirect(url_for('test.start_test'))
+
+
+# AGREGAR ESTA FUNCIÓN NUEVA AL FINAL DEL ARCHIVO
+def generate_fallback_recommendations(student, test_answer, scores):
+    """Genera recomendaciones de respaldo mejoradas"""
+    try:
+        print("🔄 Generando recomendaciones de respaldo mejoradas...")
+        
+        from app.utils.test_chaside import TestChaside
+        test_chaside = TestChaside()
+        
+        # Obtener áreas más fuertes
+        recommended_areas = test_chaside.get_recommended_areas(scores, top_n=3)
+        
+        recommendations = []
+        rank = 1
+        
+        for area_code, area_score in recommended_areas:
+            if rank > 5:
+                break
+                
+            # Buscar carreras para esta área
             area_field = f'area_{area_code.lower()}'
-            careers = Career.query.filter(getattr(Career, area_field) >= 0.5).limit(3).all()
+            careers = Career.query.filter(getattr(Career, area_field) >= 0.4).limit(2).all()
             
-            # Si no hay carreras que cumplan el criterio, buscar con un umbral más bajo
-            if not careers:
-                careers = Career.query.filter(getattr(Career, area_field) >= 0.3).limit(3).all()
-            
-            # Crear recomendaciones
-            for rank, career in enumerate(careers, 1):
+            for career in careers:
+                if rank > 5:
+                    break
+                    
                 try:
-                    # Calcular compatibilidad
-                    compatibility = calculate_compatibility(student, career, area_code, scores)
+                    # Calcular compatibilidad MEJORADA
+                    compatibility = calculate_improved_compatibility(student, career, area_code, scores)
                     
-                    # Crear explicación
-                    explanation = create_explanation(student, career, area_code, test_chaside)
+                    # Crear explicación MEJORADA
+                    explanation = create_improved_explanation(student, career, area_code, test_chaside)
                     
-                    # Guardar recomendación
                     recommendation = Recommendation(
                         student_id=student.id,
                         career_id=career.id,
                         score=compatibility,
                         rank=rank,
                         explanation=explanation,
-                        model_used='rule_based'
+                        model_used='reglas_mejoradas'
                     )
-                    db.session.add(recommendation)
+                    
+                    recommendations.append(recommendation)
+                    rank += 1
+                    
                 except Exception as e:
-                    print(f"Error procesando carrera {career.name}: {e}")
-                    # Continuar con la siguiente carrera en caso de error
+                    print(f"⚠️ Error con carrera {career.name}: {e}")
                     continue
         
-        # Guardar cambios en la base de datos
-        db.session.commit()
-        
-        # Limpiar sesión de respuestas
-        session.pop('answers', None)
-        
-        # Mostrar mensaje de éxito
-        flash('¡Test completado! Aquí están tus resultados y recomendaciones.', 'success')
-        
-        # Redirigir a resultados
-        return redirect(url_for('test.test_results'))
+        print(f"✅ {len(recommendations)} recomendaciones de respaldo generadas")
+        return recommendations
         
     except Exception as e:
-        # En caso de error, mostrar mensaje y registrar el error
-        db.session.rollback()
-        flash(f'Ocurrió un error al procesar los resultados: {str(e)}', 'danger')
-        print(f"Error en process_results: {e}")
-        return redirect(url_for('test.start_test'))
+        print(f"❌ Error en respaldo: {e}")
+        return []
 
+
+def calculate_improved_compatibility(student, career, area_code, scores):
+    """Cálculo de compatibilidad MEJORADO para sistema boliviano"""
+    try:
+        # Puntaje del área CHASIDE
+        area_score = scores[area_code]['total'] / 14.0
+        
+        # Peso de la carrera en esa área
+        area_attr = f'area_{area_code.lower()}'
+        career_weight = getattr(career, area_attr, 0.0) or 0.0
+        
+        # Compatibilidad base
+        base_compatibility = area_score * career_weight
+        
+        # 🇧🇴 BONUS POR RENDIMIENTO ACADÉMICO BOLIVIANO
+        areas_avg = student.get_average_by_area()
+        overall_avg = np.mean(list(areas_avg.values())) if areas_avg else 51
+        
+        # Bonus según escala boliviana
+        if overall_avg >= 80:
+            academic_bonus = 0.3  # Excelente
+        elif overall_avg >= 70:
+            academic_bonus = 0.2  # Muy bueno
+        elif overall_avg >= 60:
+            academic_bonus = 0.1  # Bueno
+        else:
+            academic_bonus = 0.0  # Regular
+        
+        # Bonus por área académica relevante
+        area_academic_bonus = 0.0
+        if area_code == 'I':  # Ingeniería
+            math_avg = areas_avg.get('matematicas_exactas', 51)
+            if math_avg >= 70:
+                area_academic_bonus = 0.15
+        elif area_code == 'S':  # Salud
+            science_avg = areas_avg.get('ciencias_naturales', 51)
+            if science_avg >= 70:
+                area_academic_bonus = 0.15
+        elif area_code == 'H':  # Humanísticas
+            lang_avg = areas_avg.get('comunicacion_lenguaje', 51)
+            if lang_avg >= 70:
+                area_academic_bonus = 0.15
+        
+        # Compatibilidad final
+        final_compatibility = min(
+            base_compatibility + (academic_bonus * 0.3) + (area_academic_bonus * 0.2), 
+            1.0
+        )
+        
+        return final_compatibility
+        
+    except Exception as e:
+        print(f"Error calculando compatibilidad: {e}")
+        return 0.5
+
+
+def create_improved_explanation(student, career, area_code, test_chaside):
+    """Crea explicación MEJORADA para recomendaciones"""
+    try:
+        area_info = test_chaside.get_area_characteristics(area_code)
+        
+        # Análisis académico boliviano
+        areas_avg = student.get_average_by_area()
+        overall_avg = np.mean(list(areas_avg.values())) if areas_avg else 51
+        
+        # Determinar nivel académico
+        if overall_avg >= 80:
+            academic_level = "Excelente"
+        elif overall_avg >= 70:
+            academic_level = "Muy Bueno"
+        elif overall_avg >= 60:
+            academic_level = "Bueno"
+        else:
+            academic_level = "Regular"
+        
+        explanation = {
+            "career_name": career.name,
+            "faculty_name": career.faculty.name if career.faculty else "No especificada",
+            "area_code": area_code,
+            "area_name": area_info.get('name', ''),
+            "academic_level": academic_level,
+            "overall_average": round(overall_avg, 1),
+            "recommendation_reason": f"Tu perfil muestra fuerte afinidad con {area_info.get('name', '')} y un rendimiento académico {academic_level} ({overall_avg:.1f}/100) que te prepara bien para {career.name}.",
+            "career_description": career.description or "Carrera con excelentes perspectivas.",
+            "system_used": "reglas_mejoradas_boliviano"
+        }
+        
+        return json.dumps(explanation)
+        
+    except Exception as e:
+        print(f"Error creando explicación: {e}")
+        return json.dumps({"error": "No se pudo generar explicación"})
+    
+    
 def calculate_compatibility(student, career, area_code, scores):
     """Calcular la compatibilidad entre un estudiante y una carrera basado en el área y notas (Sistema Boliviano)"""
     # Obtener puntaje del área
