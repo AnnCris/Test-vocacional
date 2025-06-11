@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}Carreras Universitarias en Bolivia | ZenitVoc{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5 py-4">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold mb-3">Carreras Universitarias en Bolivia</h1>
+            <p class="lead">Descubre las mejores opciones académicas para tu futuro profesional en nuestro país.</p>
+            <a href="#test-vocacional" class="btn btn-primary btn-lg mt-3">Realizar Test Vocacional</a>
+        </div>
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/carreras-bolivia.jpg') }}" alt="Estudiantes universitarios en Bolivia" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <!-- Introducción -->
+    <section class="mb-5 p-4 bg-light rounded-3">
+        <div class="row">
+            <div class="col-lg-10 mx-auto text-center">
+                <h2 class="mb-4">¿Cómo elegir tu carrera ideal en Bolivia?</h2>
+                <p class="fs-5">Elegir una carrera universitaria es una de las decisiones más importantes en la vida de un joven boliviano. En un país con diversidad cultural y económica como el nuestro, es fundamental considerar tus intereses, habilidades y las oportunidades del mercado laboral. Este recurso te ayudará a tomar una decisión informada.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Áreas de Estudio -->
+    <section class="mb-5">
+        <h2 class="text-center mb-5">Principales Áreas de Estudio en Bolivia</h2>
+        <div class="row g-4">
+            <!-- Card 1 -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="my-1">Ciencias de la Salud</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Medicina</li>
+                            <li class="list-group-item">Odontología</li>
+                            <li class="list-group-item">Enfermería</li>
+                            <li class="list-group-item">Bioquímica y Farmacia</li>
+                            <li class="list-group-item">Nutrición y Dietética</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <small class="text-muted">Demanda alta en el sistema público de salud</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="my-1">Ingenierías</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Ingeniería Civil</li>
+                            <li class="list-group-item">Ingeniería de Sistemas</li>
+                            <li class="list-group-item">Ingeniería Industrial</li>
+                            <li class="list-group-item">Ingeniería Petrolera</li>
+                            <li class="list-group-item">Ingeniería Ambiental</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <small class="text-muted">Crecimiento en sector construcción y tecnología</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-warning text-dark">
+                        <h4 class="my-1">Ciencias Sociales</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Derecho</li>
+                            <li class="list-group-item">Psicología</li>
+                            <li class="list-group-item">Comunicación Social</li>
+                            <li class="list-group-item">Trabajo Social</li>
+                            <li class="list-group-item">Relaciones Internacionales</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <small class="text-muted">Oportunidades en sector público y ONGs</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guía para elegir carrera -->
+    <section class="mb-5 p-4 bg-primary text-white rounded-3">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="mb-3">Guía para jóvenes bolivianos</h2>
+                <p>Como joven de provincias o de las principales ciudades de Bolivia, considera estos factores al elegir tu carrera:</p>
+                <ol class="fs-5">
+                    <li class="mb-2">Analiza tus habilidades e intereses con nuestro test vocacional</li>
+                    <li class="mb-2">Investiga las universidades disponibles en tu región</li>
+                    <li class="mb-2">Considera la empleabilidad de la carrera en tu localidad</li>
+                    <li class="mb-2">Evalúa posibilidades de movilidad si es necesario</li>
+                    <li>Consulta con profesionales en el campo que te interesa</li>
+                </ol>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-lightbulb fa-10x opacity-25"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Universidades destacadas -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Universidades Públicas por Departamento</h2>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Departamento</th>
+                        <th>Universidad Principal</th>
+                        <th>Carreras Destacadas</th>
+                        <th>Oferta Académica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>La Paz</td>
+                        <td>UMSA</td>
+                        <td>Medicina, Ingenierías, Derecho</td>
+                        <td>+100 carreras</td>
+                    </tr>
+                    <tr>
+                        <td>Cochabamba</td>
+                        <td>UMSS</td>
+                        <td>Agronomía, Arquitectura, Economía</td>
+                        <td>+80 carreras</td>
+                    </tr>
+                    <tr>
+                        <td>Santa Cruz</td>
+                        <td>UAGRM</td>
+                        <td>Ing. Petrolera, Medicina Veterinaria</td>
+                        <td>+70 carreras</td>
+                    </tr>
+                    <tr>
+                        <td>Oruro</td>
+                        <td>UTO</td>
+                        <td>Ing. Minera, Metalurgia</td>
+                        <td>+50 carreras</td>
+                    </tr>
+                    <tr>
+                        <td>Potosí</td>
+                        <td>UATF</td>
+                        <td>Ing. Geológica, Arqueología</td>
+                        <td>+40 carreras</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Test Vocacional CTA -->
+    <section id="test-vocacional" class="mb-5 p-5 text-center bg-gradient-yellow-blue text-white rounded-3 shadow">
+        <h2 class="display-5 fw-bold mb-4">¿Aún no sabes qué carrera estudiar?</h2>
+        <p class="fs-4 mb-4">Nuestro test vocacional CHASIDE te ayudará a descubrir tu verdadera vocación</p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('test.start_test') }}" class="btn btn-light btn-lg px-4">Realizar Test Vocacional</a>
+        {% else %}
+        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-4 me-2">Registrarse</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4">Iniciar Sesión</a>
+        {% endif %}
+    </section>
+
+    <!-- Consejos adicionales -->
+    <section class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white">
+                    <h4 class="my-1">Para jóvenes de provincias</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Investiga programas de residencias estudiantiles</li>
+                        <li class="list-group-item">Considera carreras con aplicación local</li>
+                        <li class="list-group-item">Explora becas municipales o departamentales</li>
+                        <li class="list-group-item">Valora carreras técnicas como opción</li>
+                        <li class="list-group-item">Consulta con exestudiantes de tu comunidad</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="my-1">Tendencias del mercado laboral</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Crecimiento en tecnología y energías renovables</li>
+                        <li class="list-group-item">Demanda de profesionales en salud rural</li>
+                        <li class="list-group-item">Oportunidades en agroindustria</li>
+                        <li class="list-group-item">Necesidad de ingenieros ambientales</li>
+                        <li class="list-group-item">Desarrollo de turismo comunitario</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

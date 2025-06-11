@@ -3,75 +3,262 @@
 {% block title %}Inicio - Sistema de Recomendación de Carreras{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <div class="text-center mb-4">
-            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="img-fluid" style="max-width: 300px;">
-        </div>
-        <h1 class="text-center">Sistema de Recomendación de Carreras Universitarias</h1>
-        <p class="lead text-center">Descubre la carrera que mejor se adapta a tus habilidades e intereses</p>
-        <div class="d-grid gap-2 col-6 mx-auto mt-5">
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('test.start_test') }}" class="btn btn-primary btn-lg">Realizar Test Vocacional</a>
-            {% else %}
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Registrarse</a>
-            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">Iniciar Sesión</a>
-            {% endif %}
+<!-- Hero Section con animación -->
+<section class="hero-section bg-gradient-primary text-white py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown">Descubre tu camino profesional</h1>
+                <p class="lead mb-4 animate__animated animate__fadeIn animate__delay-1s">ZenitVoc te ayuda a encontrar la carrera universitaria perfecta basada en tus habilidades, intereses y el mercado laboral boliviano.</p>
+                <div class="d-flex flex-wrap gap-3 animate__animated animate__fadeIn animate__delay-2s">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('test.start_test') }}" class="btn btn-light btn-lg px-4">Realizar Test Vocacional</a>
+                    {% else %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-4">Registrarse</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4">Iniciar Sesión</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{{ url_for('static', filename='img/hero-image.png') }}" alt="Estudiante feliz" class="img-fluid rounded shadow-lg animate__animated animate__fadeInRight">
+            </div>
         </div>
     </div>
-    
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="card-title">¿Cómo funciona?</h3>
-                <ol class="card-text">
-                    <li>Regístrate en nuestra plataforma</li>
-                    <li>Completa tu perfil académico</li>
-                    <li>Realiza el test vocacional CHASIDE</li>
-                    <li>Recibe recomendaciones de carreras personalizadas</li>
-                    <li>Explora información detallada sobre cada carrera recomendada</li>
-                </ol>
-                
-                <h3 class="card-title mt-4">Beneficios</h3>
-                <ul class="card-text">
-                    <li>Test vocacional científicamente validado</li>
-                    <li>Recomendaciones basadas en Machine Learning</li>
-                    <li>Información detallada sobre carreras y facultades</li>
-                    <li>Compatibilidad con tus habilidades y rendimiento académico</li>
-                    <li>Orientación profesional completa</li>
+</section>
+
+<!-- Estadísticas importantes -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <h2 class="text-primary display-4 fw-bold">30%</h2>
+                    <p class="fs-5">de estudiantes cambian de carrera en los primeros años</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <h2 class="text-success display-4 fw-bold">85%</h2>
+                    <p class="fs-5">de usuarios satisfechos con nuestras recomendaciones</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <h2 class="text-warning display-4 fw-bold">50+</h2>
+                    <p class="fs-5">carreras universitarias analizadas en nuestro sistema</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cómo funciona -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">¿Cómo funciona ZenitVoc?</h2>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-square bg-primary bg-opacity-10 text-primary rounded-circle mb-4 mx-auto">
+                            <i class="fas fa-user-edit fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">1. Regístrate</h4>
+                        <p class="mb-0">Crea tu cuenta gratuita y completa tu perfil académico básico.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-square bg-success bg-opacity-10 text-success rounded-circle mb-4 mx-auto">
+                            <i class="fas fa-clipboard-check fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">2. Realiza el test</h4>
+                        <p class="mb-0">Responde nuestro cuestionario CHASIDE (solo 15-20 minutos).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-square bg-warning bg-opacity-10 text-warning rounded-circle mb-4 mx-auto">
+                            <i class="fas fa-robot fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">3. Análisis inteligente</h4>
+                        <p class="mb-0">Nuestro sistema analiza tus respuestas con algoritmos avanzados.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-square bg-info bg-opacity-10 text-info rounded-circle mb-4 mx-auto">
+                            <i class="fas fa-graduation-cap fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">4. Recibe resultados</h4>
+                        <p class="mb-0">Obtén recomendaciones personalizadas de carreras y universidades.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modelo CHASIDE -->
+<section class="py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="mb-4">Nuestro modelo científico CHASIDE</h2>
+                <p class="lead">Evaluamos 7 dimensiones clave de tu perfil vocacional:</p>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><span class="badge bg-primary me-2">C</span> Científico: Pensamiento lógico y analítico</li>
+                    <li class="mb-3"><span class="badge bg-success me-2">H</span> Humanista: Interés por las personas</li>
+                    <li class="mb-3"><span class="badge bg-warning me-2">A</span> Artístico: Creatividad y expresión</li>
+                    <li class="mb-3"><span class="badge bg-info me-2">S</span> Social: Habilidades interpersonales</li>
+                    <li class="mb-3"><span class="badge bg-danger me-2">I</span> Investigativo: Curiosidad y análisis</li>
+                    <li class="mb-3"><span class="badge bg-secondary me-2">D</span> Directivo: Liderazgo y gestión</li>
+                    <li><span class="badge bg-light text-dark me-2">E</span> Emprendedor: Iniciativa y toma de riesgos</li>
                 </ul>
             </div>
+            <div class="col-lg-6">
+                <div class="bg-white rounded-3 p-3 shadow">
+                    <img src="{{ url_for('static', filename='img/chaside-model.png') }}" alt="Modelo CHASIDE" class="img-fluid rounded">
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<div class="row mt-5">
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-brain fa-4x text-primary mb-3"></i>
-                <h4 class="card-title">Test CHASIDE</h4>
-                <p class="card-text">Evalúa tus intereses y aptitudes en siete áreas clave para determinar tu perfil vocacional.</p>
+<!-- Carreras destacadas -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Carreras con alta demanda en Bolivia</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <img src="{{ url_for('static', filename='img/ingenieria-sistemas.jpg') }}" class="card-img-top" alt="Ingeniería de Sistemas">
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">Tecnología</span>
+                        <h4 class="card-title">Ingeniería de Sistemas</h4>
+                        <p class="card-text">Crece un 12% anual la demanda de profesionales en TI en Bolivia.</p>
+                        <a href="{{ url_for('main.careers') }}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <img src="{{ url_for('static', filename='img/medicina.jpg') }}" class="card-img-top" alt="Medicina">
+                    <div class="card-body">
+                        <span class="badge bg-success mb-2">Salud</span>
+                        <h4 class="card-title">Medicina</h4>
+                        <p class="card-text">Falta el 40% de médicos especialistas en el sistema público.</p>
+                        <a href="{{ url_for('main.careers') }}" class="btn btn-sm btn-outline-success">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <img src="{{ url_for('static', filename='img/agronomia.jpg') }}" class="card-img-top" alt="Agronomía">
+                    <div class="card-body">
+                        <span class="badge bg-warning mb-2">Agropecuaria</span>
+                        <h4 class="card-title">Agronomía</h4>
+                        <p class="card-text">Sector clave para la seguridad alimentaria del país.</p>
+                        <a href="{{ url_for('main.careers') }}" class="btn btn-sm btn-outline-warning">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.careers') }}" class="btn btn-primary px-4">Ver todas las carreras</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonios -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Lo que dicen nuestros usuarios</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="card-text fst-italic">"Gracias a ZenitVoc descubrí mi pasión por la ingeniería ambiental. Ahora estudio en la UMSA y estoy encantado con mi decisión."</p>
+                        <div class="d-flex align-items-center mt-4">
+                            <img src="{{ url_for('static', filename='img/testimonio1.jpg') }}" class="rounded-circle me-3" width="50" alt="Usuario">
+                            <div>
+                                <h6 class="mb-0">Luis R.</h6>
+                                <small class="text-muted">La Paz</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="card-text fst-italic">"Como vengo de provincia, no tenía acceso a orientación vocacional. ZenitVoc me mostró opciones que ni sabía que existían."</p>
+                        <div class="d-flex align-items-center mt-4">
+                            <img src="{{ url_for('static', filename='img/testimonio2.jpg') }}" class="rounded-circle me-3" width="50" alt="Usuario">
+                            <div>
+                                <h6 class="mb-0">Ana M.</h6>
+                                <small class="text-muted">Potosí</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="card-text fst-italic">"Estaba entre derecho y comunicación social. El test confirmó que mi perfil era perfecto para comunicación. ¡Acertaron!"</p>
+                        <div class="d-flex align-items-center mt-4">
+                            <img src="{{ url_for('static', filename='img/testimonio3.jpg') }}" class="rounded-circle me-3" width="50" alt="Usuario">
+                            <div>
+                                <h6 class="mb-0">Carlos V.</h6>
+                                <small class="text-muted">Santa Cruz</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-robot fa-4x text-primary mb-3"></i>
-                <h4 class="card-title">Machine Learning</h4>
-                <p class="card-text">Utilizamos algoritmos avanzados para analizar tus respuestas y encontrar las mejores coincidencias.</p>
-            </div>
-        </div>
+</section>
+
+<!-- CTA Final -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="display-5 fw-bold mb-4">¿Listo para descubrir tu vocación?</h2>
+        <p class="fs-4 mb-4">Comienza ahora con nuestro test vocacional científico</p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('test.start_test') }}" class="btn btn-light btn-lg px-4">Realizar Test Vocacional</a>
+        {% else %}
+        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-4 me-2">Registrarse</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4">Iniciar Sesión</a>
+        {% endif %}
     </div>
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-chart-line fa-4x text-primary mb-3"></i>
-                <h4 class="card-title">Análisis Académico</h4>
-                <p class="card-text">Consideramos tu rendimiento en diferentes materias para ofrecerte recomendaciones más precisas.</p>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 {% endblock %}

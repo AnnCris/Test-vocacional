@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+
+{% block title %}Acerca del Proyecto | ZenitVoc{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5 py-5">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold mb-3">Acerca de ZenitVoc</h1>
+            <p class="lead">El sistema de orientación vocacional inteligente para jóvenes bolivianos</p>
+        </div>
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/about-hero.jpg') }}" alt="Equipo de ZenitVoc" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <!-- Qué es ZenitVoc -->
+    <section class="mb-5 p-4 bg-light rounded-3">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <h2 class="mb-4 text-center">¿Qué es ZenitVoc?</h2>
+                <p class="fs-5">ZenitVoc es un sistema de recomendación de carreras universitarias desarrollado específicamente para el contexto boliviano. Nuestra plataforma combina el modelo CHASIDE con algoritmos de inteligencia artificial para ayudar a los jóvenes a descubrir su verdadera vocación profesional.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nuestra Misión -->
+    <section class="mb-5">
+        <h2 class="text-center mb-5">Nuestra Misión</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="my-1">Reducir la deserción</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>En Bolivia, el 30% de estudiantes cambian de carrera en los primeros dos años. Queremos reducir esta cifra ayudando a los jóvenes a tomar decisiones más informadas.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="my-1">Democratizar la orientación</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Llevar servicios de orientación vocacional de calidad a todas las regiones de Bolivia, especialmente a zonas rurales donde estos servicios son escasos.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h4 class="my-1">Potenciar talentos</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Ayudar a descubrir y desarrollar los talentos ocultos de los jóvenes bolivianos, conectándolos con carreras donde puedan brillar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modelo CHASIDE -->
+    <section class="mb-5 p-5 bg-primary text-white rounded-3">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="mb-4">El Modelo CHASIDE</h2>
+                <p>Nuestro sistema se basa en el modelo CHASIDE, que evalúa seis dimensiones clave de la personalidad y aptitudes:</p>
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-white text-primary me-3">C</span>
+                            <span>Científico: Pensamiento lógico y analítico</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-white text-primary me-3">H</span>
+                            <span>Humanista: Interés por las personas y sociedad</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-white text-primary me-3">A</span>
+                            <span>Artístico: Creatividad y expresión</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-white text-primary me-3">S</span>
+                            <span>Social: Habilidades interpersonales</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-white text-primary me-3">I</span>
+                            <span>Investigativo: Curiosidad y análisis</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-white text-primary me-3">D</span>
+                            <span>Directivo: Liderazgo y gestión</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-white text-primary me-3">E</span>
+                            <span>Emprendedor: Iniciativa y riesgo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-brain fa-10x opacity-25"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tecnología -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Tecnología que utilizamos</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-robot fa-4x text-primary mb-3"></i>
+                        <h4 class="card-title">Machine Learning</h4>
+                        <p class="card-text">Algoritmos de recomendación que analizan tus respuestas y las comparan con miles de casos exitosos.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-database fa-4x text-success mb-3"></i>
+                        <h4 class="card-title">Base de Datos</h4>
+                        <p class="card-text">Información actualizada sobre todas las carreras universitarias disponibles en Bolivia.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-pie fa-4x text-warning mb-3"></i>
+                        <h4 class="card-title">Análisis Estadístico</h4>
+                        <p class="card-text">Tendencias del mercado laboral boliviano y proyecciones de empleabilidad.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipo -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Nuestro Equipo</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <img src="{{ url_for('static', filename='img/team1.jpg') }}" class="card-img-top" alt="Fundador">
+                    <div class="card-body">
+                        <h5 class="card-title">Dr. Juan Pérez</h5>
+                        <p class="card-text text-muted">Psicólogo Educativo</p>
+                        <p class="card-text">Especialista en orientación vocacional con 15 años de experiencia trabajando con jóvenes.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <img src="{{ url_for('static', filename='img/team2.jpg') }}" class="card-img-top" alt="Coordinadora">
+                    <div class="card-body">
+                        <h5 class="card-title">Lic. María Gómez</h5>
+                        <p class="card-text text-muted">Ingeniera de Sistemas</p>
+                        <p class="card-text">Desarrolladora del algoritmo de recomendación y análisis de datos.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <img src="{{ url_for('static', filename='img/team3.jpg') }}" class="card-img-top" alt="Asesor">
+                    <div class="card-body">
+                        <h5 class="card-title">Mg. Carlos Fernández</h5>
+                        <p class="card-text text-muted">Especialista en Educación Superior</p>
+                        <p class="card-text">Responsable de la investigación sobre el sistema universitario boliviano.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Testimonios</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="card-text fst-italic">"Gracias a ZenitVoc descubrí que mi verdadera vocación era la ingeniería ambiental. Ahora estudio en la UMSA y estoy muy contento con mi decisión."</p>
+                        <p class="card-text fw-bold mt-3">Luis R., La Paz</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="card-text fst-italic">"Como vengo de una zona rural, no tenía mucha información sobre carreras. ZenitVoc me mostró opciones que ni sabía que existían y que son perfectas para mí."</p>
+                        <p class="card-text fw-bold mt-3">Ana M., Potosí</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="card-text fst-italic">"Estaba entre derecho y comunicación social. El test me mostró que mi perfil era más adecuado para comunicación y acertó completamente."</p>
+                        <p class="card-text fw-bold mt-3">Carlos V., Santa Cruz</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="text-center p-5 bg-light rounded-3">
+        <h2 class="display-5 fw-bold mb-4">¿Listo para descubrir tu vocación?</h2>
+        <p class="fs-4 mb-4">Comienza ahora con nuestro test vocacional científico</p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('test.start_test') }}" class="btn btn-primary btn-lg px-4">Realizar Test Vocacional</a>
+        {% else %}
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 me-2">Registrarse</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg px-4">Iniciar Sesión</a>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

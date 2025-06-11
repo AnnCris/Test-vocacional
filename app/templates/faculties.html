@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+
+{% block title %}Facultades Universitarias en Bolivia | ZenitVoc{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5 py-4">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold mb-3">Facultades Universitarias en Bolivia</h1>
+            <p class="lead">Conoce la estructura académica de las principales universidades del país y cómo elegir la facultad adecuada para tu formación profesional.</p>
+            <a href="#mapa-facultades" class="btn btn-primary btn-lg mt-3">Ver Mapa de Facultades</a>
+        </div>
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/facultades-bolivia.jpg') }}" alt="Campus universitario en Bolivia" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <!-- Introducción -->
+    <section class="mb-5 p-4 bg-light rounded-3">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <h2 class="mb-4 text-center">¿Qué es una facultad universitaria?</h2>
+                <p class="fs-5">En Bolivia, las facultades son las unidades académicas que agrupan carreras afines dentro de una universidad. Cada facultad tiene su propia organización, autoridades y planes de estudio. Comprender esta estructura te ayudará a navegar mejor el sistema universitario boliviano y tomar decisiones informadas sobre tu futuro académico.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estructura universitaria -->
+    <section class="mb-5">
+        <h2 class="text-center mb-5">Estructura del Sistema Universitario Boliviano</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="my-1">Nivel Central</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>La Universidad (ej: UMSA, UMSS) es la entidad principal que coordina todas las facultades.</p>
+                        <ul>
+                            <li>Rectorado</li>
+                            <li>Vicerrectorados</li>
+                            <li>Consejo Universitario</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="my-1">Facultades</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Unidades académicas que agrupan carreras relacionadas. Cada facultad tiene:</p>
+                        <ul>
+                            <li>Decanato</li>
+                            <li>Consejo Facultativo</li>
+                            <li>Departamentos académicos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h4 class="my-1">Carreras</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Programas de formación profesional que otorgan títulos académicos.</p>
+                        <ul>
+                            <li>Director de Carrera</li>
+                            <li>Plan de estudios</li>
+                            <li>Malla curricular</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Facultades por universidad -->
+    <section class="mb-5" id="mapa-facultades">
+        <h2 class="text-center mb-4">Principales Facultades por Universidad</h2>
+        
+        <!-- UMSA -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="my-1">Universidad Mayor de San Andrés (UMSA) - La Paz</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <h5 class="my-1">Ciencias Puras</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Ingeniería</li>
+                                    <li>• Facultad de Ciencias Físicas</li>
+                                    <li>• Facultad de Ciencias Químicas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-success bg-opacity-10">
+                                <h5 class="my-1">Ciencias de la Salud</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Medicina</li>
+                                    <li>• Facultad de Odontología</li>
+                                    <li>• Facultad de Farmacia</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-warning bg-opacity-10">
+                                <h5 class="my-1">Ciencias Sociales</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Derecho</li>
+                                    <li>• Facultad de Economía</li>
+                                    <li>• Facultad de Humanidades</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-info bg-opacity-10">
+                                <h5 class="my-1">Artes y Tecnología</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Arquitectura</li>
+                                    <li>• Facultad de Artes</li>
+                                    <li>• Facultad de Tecnología</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UMSS -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h3 class="my-1">Universidad Mayor de San Simón (UMSS) - Cochabamba</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <h5 class="my-1">Ciencias Básicas</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Ciencias y Tecnología</li>
+                                    <li>• Facultad de Ciencias Agrícolas</li>
+                                    <li>• Facultad de Ciencias Químicas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-success bg-opacity-10">
+                                <h5 class="my-1">Ciencias de la Vida</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Medicina</li>
+                                    <li>• Facultad de Enfermería</li>
+                                    <li>• Facultad de Bioquímica</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-warning bg-opacity-10">
+                                <h5 class="my-1">Ciencias Sociales</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Derecho</li>
+                                    <li>• Facultad de Economía</li>
+                                    <li>• Facultad de Sociología</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UAGRM -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h3 class="my-1">Universidad Autónoma Gabriel René Moreno (UAGRM) - Santa Cruz</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <h5 class="my-1">Ingenierías</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Ingeniería</li>
+                                    <li>• Facultad de Tecnología</li>
+                                    <li>• Facultad de Ciencias Exactas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-success bg-opacity-10">
+                                <h5 class="my-1">Ciencias Agropecuarias</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Agronomía</li>
+                                    <li>• Facultad de Veterinaria</li>
+                                    <li>• Facultad de Ciencias Forestales</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-warning bg-opacity-10">
+                                <h5 class="my-1">Ciencias Sociales</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Ciencias Jurídicas</li>
+                                    <li>• Facultad de Humanidades</li>
+                                    <li>• Facultad de Ciencias Económicas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-info bg-opacity-10">
+                                <h5 class="my-1">Ciencias de la Salud</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled">
+                                    <li>• Facultad de Medicina</li>
+                                    <li>• Facultad de Odontología</li>
+                                    <li>• Facultad de Bioquímica</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cómo elegir facultad -->
+    <section class="mb-5 p-5 bg-gradient-primary text-white rounded-3 shadow">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="mb-4">¿Cómo elegir la mejor facultad para ti?</h2>
+                <div class="accordion accordion-flush" id="accordionFacultades">
+                    <div class="accordion-item bg-transparent">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                1. Considera tu vocación y habilidades
+                            </button>
+                        </h3>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionFacultades">
+                            <div class="accordion-body">
+                                Realiza nuestro test vocacional para identificar las áreas que mejor se adaptan a tu perfil. Las facultades agrupan carreras con enfoques similares.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-transparent">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                2. Investiga el prestigio académico
+                            </button>
+                        </h3>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFacultades">
+                            <div class="accordion-body">
+                                Cada facultad tiene diferente reconocimiento según su antigüedad, infraestructura y cuerpo docente. Consulta rankings y opiniones de estudiantes.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-transparent">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                3. Evalúa la ubicación geográfica
+                            </button>
+                        </h3>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFacultades">
+                            <div class="accordion-body">
+                                Si eres de provincia, considera facultades regionales o programas de movilidad estudiantil. Algunas facultades tienen sedes en diferentes ciudades.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-university fa-10x opacity-25"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Facultades especializadas -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Facultades Especializadas en Bolivia</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="my-1">Facultad de Ciencias del Desarrollo Rural (UMSS)</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Única en su tipo en Bolivia, enfocada en:</p>
+                        <ul>
+                            <li>Agroecología</li>
+                            <li>Desarrollo rural sostenible</li>
+                            <li>Tecnologías apropiadas para comunidades</li>
+                        </ul>
+                        <p class="mt-2"><strong>Relevancia:</strong> Ideal para estudiantes de áreas rurales que quieren contribuir al desarrollo de sus comunidades.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="my-1">Facultad de Ingeniería Geológica (UTO)</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Especializada en:</p>
+                        <ul>
+                            <li>Minería</li>
+                            <li>Geología</li>
+                            <li>Metalurgia</li>
+                        </ul>
+                        <p class="mt-2"><strong>Relevancia:</strong> Principal centro de formación para el sector minero, clave en la economía boliviana.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final CORREGIDO -->
+    <section class="text-center p-5 bg-light rounded-3">
+        <h2 class="display-5 fw-bold mb-4">¿Necesitas más ayuda para decidir?</h2>
+        <p class="fs-4 mb-4">Nuestro test vocacional puede ayudarte a identificar la facultad y carrera perfecta para ti</p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('test.start_test') }}" class="btn btn-primary btn-lg px-4">Realizar Test Vocacional</a>
+        {% else %}
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 me-2">Registrarse</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg px-4">Iniciar Sesión</a>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

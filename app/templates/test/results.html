@@ -3,296 +3,253 @@
 {% block title %}Resultados del Test Vocacional{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12 mb-4">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">
-                <i class="fas fa-user-graduate"></i> Tu Perfil Vocacional Inteligente
-            </h4>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
-                    <h5>Análisis con Inteligencia Artificial</h5>
-                    <p class="lead">
-                        {% if profile_analysis %}
-                            {{ profile_analysis.profile_type }}
-                        {% else %}
-                            Perfil vocacional único basado en tus respuestas al test CHASIDE.
-                        {% endif %}
-                    </p>
-                    
-                    <!-- Métricas principales -->
+<div class="container">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-graduate"></i> Tu Perfil Vocacional Inteligente
+                    </h4>
+                </div>
+                <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
-                            <h6><i class="fas fa-chart-line"></i> Rendimiento Académico</h6>
-                            {% if profile_analysis %}
-                                <div class="progress mb-2">
-                                    <div class="progress-bar bg-info" 
-                                         style="width: {{ profile_analysis.overall_academic }}%">
-                                        {{ profile_analysis.overall_academic }}/100
-                                    </div>
-                                </div>
-                            {% else %}
-                                <p class="text-muted">Datos académicos procesados</p>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <h6><i class="fas fa-balance-scale"></i> Consistencia CHASIDE</h6>
-                            {% if profile_analysis %}
-                                <div class="progress mb-2">
-                                    <div class="progress-bar bg-success" 
-                                         style="width: {{ (profile_analysis.chaside_consistency * 100) | round }}%">
-                                        {{ (profile_analysis.chaside_consistency * 100) | round }}%
-                                    </div>
-                                </div>
-                            {% else %}
-                                <p class="text-muted">Respuestas analizadas</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4 text-center">
-                    <h6>Áreas Dominantes</h6>
-                    {% if profile_analysis and profile_analysis.chaside_strengths %}
-                        {% for strength in profile_analysis.chaside_strengths[:3] %}
-                            <span class="badge badge-primary badge-lg mr-1 mb-1">
-                                {{ strength.area }}: {{ strength.score }}
-                            </span>
-                        {% endfor %}
-                    {% else %}
-                        <!-- Mostrar áreas con mayor puntaje del scores original -->
-                        {% set area_names = {
-                            'C': 'Administrativas', 'H': 'Humanísticas', 'A': 'Artísticas',
-                            'S': 'Salud', 'I': 'Ingeniería', 'D': 'Defensa', 'E': 'Ciencias'
-                        } %}
-                        {% for area, score in scores.items() %}
-                            {% if score >= 8 %}
-                                <span class="badge badge-primary badge-lg mr-1 mb-1">
-                                    {{ area_names[area] }}: {{ score }}
-                                </span>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MEJORAR: Sección de recomendaciones con explicaciones -->
-{% for recommendation in recommended_careers %}
-<div class="col-12 mb-4">
-    <div class="card shadow border-left-primary">
-        <div class="card-header">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h3 class="mb-0">
-                        <span class="badge badge-primary mr-2">#{{ recommendation.rank }}</span>
-                        {{ recommendation.career.name }}
-                    </h3>
-                    <small class="text-muted">
-                        <i class="fas fa-university"></i> {{ recommendation.career.faculty.name }}
-                    </small>
-                </div>
-                <div class="col-md-4 text-right">
-                    <h4 class="text-primary mb-0">{{ recommendation.score | round(1) }}%</h4>
-                    <small class="text-muted">Compatibilidad</small>
-                    {% if recommendation.model_used %}
-                        <br><small class="badge badge-info">{{ recommendation.model_used.replace('_', ' ').title() }}</small>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <!-- Barra de compatibilidad visual -->
-            <div class="progress mt-2" style="height: 8px;">
-                <div class="progress-bar 
-                    {% if recommendation.score >= 80 %}bg-success
-                    {% elif recommendation.score >= 60 %}bg-info
-                    {% elif recommendation.score >= 40 %}bg-warning
-                    {% else %}bg-secondary{% endif %}" 
-                     style="width: {{ recommendation.score }}%"></div>
-            </div>
-        </div>
-        
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
-                    <!-- Descripción -->
-                    <h5><i class="fas fa-info-circle"></i> Descripción</h5>
-                    <p>{{ recommendation.career.description or "Carrera con excelentes perspectivas profesionales." }}</p>
-                    
-                    <!-- NUEVA: Explicación inteligente -->
-                    {% if recommendation.explanation %}
-                        <h5><i class="fas fa-brain"></i> ¿Por qué te recomendamos esta carrera?</h5>
-                        <div class="alert alert-info">
-                            {% if recommendation.explanation.main_explanation %}
-                                <p class="mb-0">{{ recommendation.explanation.main_explanation }}</p>
-                            {% elif recommendation.explanation.recommendation_reason %}
-                                <p class="mb-0">{{ recommendation.explanation.recommendation_reason }}</p>
-                            {% else %}
-                                <p class="mb-0">Esta carrera se alinea bien con tu perfil vocacional y académico.</p>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Mostrar información adicional si está disponible -->
-                        {% if recommendation.explanation.academic_performance %}
-                            <p><strong>Tu rendimiento académico:</strong> {{ recommendation.explanation.academic_performance }}/100</p>
-                        {% endif %}
-                    {% else %}
-                        <div class="alert alert-info">
-                            <p class="mb-0">Esta carrera coincide con tus intereses y aptitudes identificados en el test CHASIDE.</p>
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <div class="col-md-4">
-                    <!-- NUEVO: Información de compatibilidad -->
-                    <div class="card bg-light">
-                        <div class="card-body">
-                            <h6><i class="fas fa-chart-pie"></i> Análisis de Compatibilidad</h6>
+                        <div class="col-md-8">
+                            <h5>Análisis con Inteligencia Artificial</h5>
+                            <p class="lead">
+                                {% if profile_analysis %}
+                                    {{ profile_analysis.profile_type }}
+                                {% else %}
+                                    Perfil vocacional único basado en tus respuestas al test CHASIDE.
+                                {% endif %}
+                            </p>
                             
-                            <!-- Mostrar áreas CHASIDE relevantes -->
-                            <small class="text-muted">Áreas CHASIDE principales:</small>
-                            <div class="mt-2">
-                                {% set career_areas = {
-                                    'C': recommendation.career.area_c,
-                                    'H': recommendation.career.area_h,
-                                    'A': recommendation.career.area_a,
-                                    'S': recommendation.career.area_s,
-                                    'I': recommendation.career.area_i,
-                                    'D': recommendation.career.area_d,
-                                    'E': recommendation.career.area_e
-                                } %}
-                                {% set area_names = {
-                                    'C': 'Admin', 'H': 'Human', 'A': 'Arte',
-                                    'S': 'Salud', 'I': 'Ing', 'D': 'Defensa', 'E': 'Ciencias'
-                                } %}
+                            <!-- Métricas principales -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-chart-line"></i> Rendimiento Académico</h6>
+                                    {% if profile_analysis %}
+                                        <div class="progress mb-2">
+                                            <div class="progress-bar bg-info" 
+                                                 style="width: {{ profile_analysis.overall_academic }}%">
+                                                {{ profile_analysis.overall_academic }}/100
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted">Datos académicos procesados</p>
+                                    {% endif %}
+                                </div>
                                 
-                                {% for area, weight in career_areas.items() %}
-                                    {% if weight and weight >= 0.3 %}
-                                        <span class="badge badge-outline-primary mr-1">
-                                            {{ area_names[area] }}: {{ (weight * 100) | round }}%
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-balance-scale"></i> Consistencia CHASIDE</h6>
+                                    {% if profile_analysis %}
+                                        <div class="progress mb-2">
+                                            <div class="progress-bar bg-success" 
+                                                 style="width: {{ (profile_analysis.chaside_consistency * 100) | round }}%">
+                                                {{ (profile_analysis.chaside_consistency * 100) | round }}%
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted">Respuestas analizadas</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-center">
+                            <h6>Áreas Dominantes</h6>
+                            {% if profile_analysis and profile_analysis.chaside_strengths %}
+                                {% for strength in profile_analysis.chaside_strengths[:3] %}
+                                    <span class="badge badge-primary badge-lg mr-1 mb-1">
+                                        {{ strength.area }}: {{ strength.score }}
+                                    </span>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Mostrar áreas con mayor puntaje del scores original -->
+                                {% set area_names = {
+                                    'C': 'Administrativas', 'H': 'Humanísticas', 'A': 'Artísticas',
+                                    'S': 'Salud', 'I': 'Ingeniería', 'D': 'Defensa', 'E': 'Ciencias'
+                                } %}
+                                {% for area, score in scores.items() %}
+                                    {% if score >= 8 %}
+                                        <span class="badge badge-primary badge-lg mr-1 mb-1">
+                                            {{ area_names[area] }}: {{ score }}
                                         </span>
                                     {% endif %}
                                 {% endfor %}
-                            </div>
-                            
-                            <!-- Tu puntuación en esas áreas -->
-                            <small class="text-muted mt-2 d-block">Tus puntajes:</small>
-                            <div>
-                                {% for area, weight in career_areas.items() %}
-                                    {% if weight and weight >= 0.3 and scores[area] %}
-                                        <small class="badge badge-secondary mr-1">
-                                            {{ area_names[area] }}: {{ scores[area] }}/14
-                                        </small>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-{% endfor %}
-    <div class="col-md-12">
-        <div class="card shadow mb-4">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Tus Resultados del Test Vocacional</h2>
-            </div>
-            <div class="card-body">
-                <p class="lead">Test completado el {{ test_date.strftime('%d/%m/%Y') }}</p>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <h3>Perfil de Áreas</h3>
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <img src="{{ radar_chart }}" class="img-fluid" alt="Perfil de Áreas">
+
+        <!-- Sección de gráficos -->
+        <div class="col-md-12">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Tus Resultados del Test Vocacional</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Test completado el {{ test_date.strftime('%d/%m/%Y') }}</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Perfil de Áreas</h3>
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <img src="{{ radar_chart }}" class="img-fluid" alt="Perfil de Áreas">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <h3>Compatibilidad de Carreras</h3>
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <img src="{{ bar_chart }}" class="img-fluid" alt="Compatibilidad de Carreras">
+                        <div class="col-md-6">
+                            <h3>Compatibilidad de Carreras</h3>
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <img src="{{ bar_chart }}" class="img-fluid" alt="Compatibilidad de Carreras">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>   
+                    </div>   
+                </div>
             </div>
         </div>
-        
+
+        <!-- Sección de recomendaciones -->
         <h2 class="mt-5 mb-4">Carreras Recomendadas para Ti</h2>
         
         {% for recommendation in recommended_careers %}
-        <div class="card shadow mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">{{ recommendation.career.name }}</h3>
-                    <span class="badge bg-primary fs-5">{{ recommendation.score|round|int }}% de compatibilidad</span>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h4>Descripción</h4>
-                        <p>{{ recommendation.career.description }}</p>
-                        
-                        <h4>¿Por qué te recomendamos esta carrera?</h4>
-                        <p>{{ recommendation.explanation.recommendation_reason }}</p>
-                        
-                        <h4>Facultad</h4>
-                        <p>{{ recommendation.career.faculty.name }} - {{ recommendation.career.faculty.description }}</p>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header bg-light">
-                                <h5 class="mb-0">Área principal: {{ recommendation.explanation.area_name }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <h6>Intereses relacionados:</h6>
-                                <ul>
-                                    {% for interest in recommendation.explanation.interests[:5] %}
-                                    <li>{{ interest }}</li>
-                                    {% endfor %}
-                                </ul>
-                                
-                                <h6>Aptitudes requeridas:</h6>
-                                <ul>
-                                    {% for aptitude in recommendation.explanation.aptitudes[:5] %}
-                                    <li>{{ aptitude }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+        <div class="col-12 mb-4">
+            <div class="card shadow border-left-primary">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h3 class="mb-0">
+                                <span class="badge badge-primary mr-2">#{{ loop.index }}</span>
+                                {{ recommendation.career.name }}
+                            </h3>
+                            <small class="text-muted">
+                                <i class="fas fa-university"></i> {{ recommendation.career.faculty.name }}
+                            </small>
                         </div>
+                        <div class="col-md-4 text-right">
+                            <h4 class="text-primary mb-0">{{ recommendation.score | round(1) }}%</h4>
+                            <small class="text-muted">Compatibilidad</small>
+                            {% if recommendation.model_used %}
+                                <br><small class="badge badge-info">{{ recommendation.model_used.replace('_', ' ').title() }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Barra de compatibilidad visual -->
+                    <div class="progress mt-2" style="height: 8px;">
+                        <div class="progress-bar 
+                            {% if recommendation.score >= 80 %}bg-success
+                            {% elif recommendation.score >= 60 %}bg-info
+                            {% elif recommendation.score >= 40 %}bg-warning
+                            {% else %}bg-secondary{% endif %}" 
+                             style="width: {{ recommendation.score }}%"></div>
                     </div>
                 </div>
                 
-                <h4 class="mt-4">Carreras similares</h4>
-                <div class="row">
-                    {% for similar_career in recommendation.explanation.related_careers[:3] %}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ similar_career }}</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Descripción -->
+                            <h5><i class="fas fa-info-circle"></i> Descripción</h5>
+                            <p>{{ recommendation.career.description or "Carrera con excelentes perspectivas profesionales." }}</p>
+                            
+                            <!-- Explicación inteligente -->
+                            <h5><i class="fas fa-brain"></i> ¿Por qué te recomendamos esta carrera?</h5>
+                            <div class="alert alert-info">
+                                {% if recommendation.explanation and recommendation.explanation.recommendation_reason %}
+                                    <p class="mb-0">{{ recommendation.explanation.recommendation_reason }}</p>
+                                {% else %}
+                                    <p class="mb-0">Esta carrera se alinea bien con tu perfil vocacional y académico.</p>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Mostrar información adicional si está disponible -->
+                            {% if recommendation.explanation and recommendation.explanation.academic_performance %}
+                                <p><strong>Tu rendimiento académico:</strong> {{ recommendation.explanation.academic_performance }}/100</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <!-- Información de compatibilidad -->
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6><i class="fas fa-chart-pie"></i> Análisis de Compatibilidad</h6>
+                                    
+                                    <!-- Mostrar áreas CHASIDE relevantes -->
+                                    <small class="text-muted">Áreas CHASIDE principales:</small>
+                                    <div class="mt-2">
+                                        {% set career_areas = {
+                                            'C': recommendation.career.area_c,
+                                            'H': recommendation.career.area_h,
+                                            'A': recommendation.career.area_a,
+                                            'S': recommendation.career.area_s,
+                                            'I': recommendation.career.area_i,
+                                            'D': recommendation.career.area_d,
+                                            'E': recommendation.career.area_e
+                                        } %}
+                                        {% set area_names = {
+                                            'C': 'Admin', 'H': 'Human', 'A': 'Arte',
+                                            'S': 'Salud', 'I': 'Ing', 'D': 'Defensa', 'E': 'Ciencias'
+                                        } %}
+                                        
+                                        {% for area, weight in career_areas.items() %}
+                                            {% if weight and weight >= 0.3 %}
+                                                <span class="badge badge-outline-primary mr-1">
+                                                    {{ area_names[area] }}: {{ (weight * 100) | round }}%
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    <!-- Tu puntuación en esas áreas -->
+                                    <small class="text-muted mt-2 d-block">Tus puntajes:</small>
+                                    <div>
+                                        {% for area, weight in career_areas.items() %}
+                                            {% if weight and weight >= 0.3 and scores[area] %}
+                                                <small class="badge badge-secondary mr-1">
+                                                    {{ area_names[area] }}: {{ scores[area] }}/14
+                                                </small>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+
+                                    <!-- Sección de intereses (con comprobación) -->
+                                    {% if recommendation.explanation and recommendation.explanation.interests %}
+                                        <small class="text-muted mt-2 d-block">Intereses relacionados:</small>
+                                        <ul class="list-unstyled">
+                                            {% for interest in recommendation.explanation.interests[:3] %}
+                                                <li><i class="fas fa-check-circle text-success"></i> {{ interest }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+
+                                    <!-- Sección de aptitudes (con comprobación) -->
+                                    {% if recommendation.explanation and recommendation.explanation.aptitudes %}
+                                        <small class="text-muted mt-2 d-block">Aptitudes requeridas:</small>
+                                        <ul class="list-unstyled">
+                                            {% for aptitude in recommendation.explanation.aptitudes[:3] %}
+                                                <li><i class="fas fa-check-circle text-success"></i> {{ aptitude }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>
         {% endfor %}
         
-        <div class="d-flex justify-content-center mt-4 mb-5">
-            <a href="{{ url_for('test.retake_test') }}">Volver a realizar el test</a>
+        <!-- Botones de acción -->
+        <div class="d-flex justify-content-center mt-4 mb-5 gap-3">
+            <a href="{{ url_for('test.retake_test') }}" class="btn btn-outline-primary">
                 <i class="fas fa-redo"></i> Volver a realizar el test
             </a>
             <a href="#" class="btn btn-primary" onclick="window.print()">
@@ -304,49 +261,11 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('resultsChart').getContext('2d');
-        
-        const chart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: [
-                    'Administrativas (C)', 
-                    'Humanísticas (H)', 
-                    'Artísticas (A)', 
-                    'Salud (S)', 
-                    'Ingenierías (I)', 
-                    'Defensa (D)', 
-                    'Científicas (E)'
-                ],
-                datasets: [{
-                    label: 'Tus resultados',
-                    data: [
-                        {{ scores['C'] }}, 
-                        {{ scores['H'] }}, 
-                        {{ scores['A'] }}, 
-                        {{ scores['S'] }}, 
-                        {{ scores['I'] }}, 
-                        {{ scores['D'] }}, 
-                        {{ scores['E'] }}
-                    ],
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                scale: {
-                    ticks: {
-                        beginAtZero: true,
-                        max: 14
-                    }
-                }
-            }
-        });
+        // Si necesitas crear gráficos adicionales con Chart.js
+        // Puedes agregar el código aquí
     });
 </script>
 {% endblock %}

@@ -1,4 +1,4 @@
-# CREAR ARCHIVO NUEVO: app/utils/career_matcher.py
+# REEMPLAZA COMPLETAMENTE: app/utils/career_matcher.py
 
 import numpy as np
 import pandas as pd
@@ -17,28 +17,23 @@ class CareerMatcher:
         """Inicializa el sistema"""
         self.models_loaded = False
         
-        # Intentar cargar modelos ML si existen
-        try:
-            from app.ml_models.ensemble import EnsembleRecommender
-            from app.ml_models.data_processor import DataProcessor
-            
-            self.recommender = EnsembleRecommender()
-            self.data_processor = DataProcessor()
-            
-            # Buscar modelos guardados
-            models_path = os.path.join('app', 'ml_models', 'saved_models')
-            if os.path.exists(models_path) and os.listdir(models_path):
-                try:
-                    self.recommender.load_models(models_path)
-                    self.models_loaded = True
-                    print("✅ Modelos ML cargados - Usando IA avanzada")
-                except:
-                    print("⚠️ Modelos no disponibles - Usando reglas mejoradas")
-            else:
-                print("💡 Modelos no encontrados - Usando reglas mejoradas")
-                
-        except ImportError:
-            print("📋 ML no disponible - Usando reglas mejoradas")
+        # Verificar si hay estado de entrenamiento
+        models_path = os.path.join('app', 'ml_models', 'saved_models')
+        status_file = os.path.join(models_path, 'training_status.json')
+        
+        if os.path.exists(status_file):
+            try:
+                with open(status_file, 'r') as f:
+                    status = json.load(f)
+                    if status.get('trained', False):
+                        self.models_loaded = True
+                        print("✅ Modelos ML disponibles - Usando IA avanzada")
+                    else:
+                        print("📋 Usando reglas mejoradas")
+            except:
+                print("📋 Usando reglas mejoradas")
+        else:
+            print("💡 Modelos no encontrados - Usando reglas mejoradas")
     
     def generate_recommendations(self, student, test_answers, top_n=5):
         """
@@ -78,27 +73,97 @@ class CareerMatcher:
     def _generate_ml_recommendations(self, student, test_answers, careers, top_n):
         """Genera recomendaciones usando ML"""
         try:
+            # Intentar cargar modelos individuales
+            from app.ml_models.logistic_regression import CareerLogisticRegression
+            from app.ml_models.decision_tree import CareerDecisionTree
+            from app.ml_models.knn import CareerKNN
+            
+            models_path = os.path.join('app', 'ml_models', 'saved_models')
+            
             # Preparar datos del estudiante
-            student_data = self.data_processor.prepare_student_data(student, test_answers)
+            student_data = self._prepare_student_features(student, test_answers)
+            career_data = self._prepare_career_data(careers)
             
-            # Preparar datos de carreras
-            career_data = self.data_processor.prepare_career_data(careers)
+            # Cargar modelos disponibles
+            models = {}
             
-            # Generar recomendaciones con ensemble
-            ml_recommendations = self.recommender.recommend_careers(
-                student_data, career_data, top_n=top_n
-            )
+            # Regresión Logística
+            try:
+                logistic_model = CareerLogisticRegression(
+                    os.path.join(models_path, 'logistic_model.pkl')
+                )
+                models['logistic'] = logistic_model
+            except:
+                pass
+            
+            # Árbol de Decisión
+            try:
+                tree_model = CareerDecisionTree(
+                    os.path.join(models_path, 'tree_model.pkl')
+                )
+                models['tree'] = tree_model
+            except:
+                pass
+            
+            # KNN
+            try:
+                knn_model = CareerKNN(
+                    model_path=os.path.join(models_path, 'knn_model.pkl')
+                )
+                models['knn'] = knn_model
+            except:
+                pass
+            
+            if not models:
+                print("⚠️ No se pudieron cargar modelos ML")
+                return []
+            
+            # Generar predicciones con modelos disponibles
+            all_predictions = {}
+            
+            for model_name, model in models.items():
+                try:
+                    if model_name == 'logistic':
+                        predictions = model.predict_compatibility(student_data, career_data)
+                    elif model_name == 'tree':
+                        predictions = model.predict_best_careers(student_data, career_data, top_n=10)
+                    elif model_name == 'knn':
+                        predictions = model.predict_career_compatibility(student_data, career_data)
+                    
+                    all_predictions[model_name] = predictions
+                except Exception as e:
+                    print(f"⚠️ Error con modelo {model_name}: {e}")
+                    continue
+            
+            if not all_predictions:
+                return []
+            
+            # Combinar predicciones
+            combined_scores = {}
+            model_weights = {name: 1.0/len(all_predictions) for name in all_predictions}
+            
+            for model_name, predictions in all_predictions.items():
+                weight = model_weights[model_name]
+                for career_id, score in predictions[:top_n*2]:  # Considerar más carreras
+                    if career_id in combined_scores:
+                        combined_scores[career_id] += score * weight
+                    else:
+                        combined_scores[career_id] = score * weight
+            
+            # Ordenar y tomar top N
+            sorted_careers = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)
+            top_careers = sorted_careers[:top_n]
             
             # Convertir a objetos Recommendation
             result = []
-            for rank, (career_id, score, main_model) in enumerate(ml_recommendations, 1):
-                career = Career.query.get(career_id)
+            for rank, (career_id, score) in enumerate(top_careers, 1):
+                career = db.session.get(Career, career_id)  # CORREGIDO: Usar db.session.get
                 if not career:
                     continue
                 
                 # Generar explicación
                 explanation = self._generate_ml_explanation(
-                    student, test_answers, career, score, main_model
+                    student, test_answers, career, score, 'ensemble'
                 )
                 
                 recommendation = Recommendation(
@@ -107,7 +172,7 @@ class CareerMatcher:
                     score=score,
                     rank=rank,
                     explanation=json.dumps(explanation),
-                    model_used=f'ml_{main_model}'
+                    model_used='ml_ensemble'
                 )
                 
                 result.append(recommendation)
@@ -117,6 +182,91 @@ class CareerMatcher:
         except Exception as e:
             print(f"Error en ML: {e}")
             return []
+    
+    def _prepare_student_features(self, student, test_answers):
+        """Prepara características del estudiante para ML"""
+        # Datos académicos por área (sistema boliviano)
+        areas_averages = student.get_average_by_area()
+        
+        # Datos del estudiante con MEJORAS
+        student_data = {
+            # Promedios académicos normalizados (0-1)
+            'matematicas_exactas_avg': areas_averages.get('matematicas_exactas', 51) / 100.0,
+            'ciencias_naturales_avg': areas_averages.get('ciencias_naturales', 51) / 100.0,
+            'comunicacion_lenguaje_avg': areas_averages.get('comunicacion_lenguaje', 51) / 100.0,
+            'ciencias_sociales_avg': areas_averages.get('ciencias_sociales', 51) / 100.0,
+            'artes_expresion_avg': areas_averages.get('artes_expresion', 51) / 100.0,
+            'educacion_fisica_avg': areas_averages.get('educacion_fisica', 51) / 100.0,
+            
+            # Puntajes CHASIDE normalizados
+            'score_c': test_answers.score_c / 14.0,
+            'score_h': test_answers.score_h / 14.0,
+            'score_a': test_answers.score_a / 14.0,
+            'score_s': test_answers.score_s / 14.0,
+            'score_i': test_answers.score_i / 14.0,
+            'score_d': test_answers.score_d / 14.0,
+            'score_e': test_answers.score_e / 14.0,
+            
+            # Características adicionales
+            'dominant_chaside_area': self._get_dominant_area(test_answers),
+            'academic_performance_level': self._get_academic_level(areas_averages),
+            'chaside_consistency': self._calculate_chaside_consistency(test_answers)
+        }
+        
+        return pd.DataFrame([student_data])
+    
+    def _prepare_career_data(self, careers):
+        """Prepara datos de carreras"""
+        career_data = []
+        
+        for career in careers:
+            data = {
+                'id': career.id,
+                'faculty_id': career.faculty_id,
+                'area_c': career.area_c or 0.0,
+                'area_h': career.area_h or 0.0,
+                'area_a': career.area_a or 0.0,
+                'area_s': career.area_s or 0.0,
+                'area_i': career.area_i or 0.0,
+                'area_d': career.area_d or 0.0,
+                'area_e': career.area_e or 0.0
+            }
+            career_data.append(data)
+        
+        return pd.DataFrame(career_data)
+    
+    def _get_dominant_area(self, test_answers):
+        """Identifica el área CHASIDE dominante"""
+        scores = {
+            'C': test_answers.score_c, 'H': test_answers.score_h,
+            'A': test_answers.score_a, 'S': test_answers.score_s,
+            'I': test_answers.score_i, 'D': test_answers.score_d,
+            'E': test_answers.score_e
+        }
+        dominant = max(scores, key=scores.get)
+        area_mapping = {'C': 0, 'H': 1, 'A': 2, 'S': 3, 'I': 4, 'D': 5, 'E': 6}
+        return area_mapping.get(dominant, 0)
+    
+    def _get_academic_level(self, areas_averages):
+        """Determina nivel académico"""
+        overall_avg = np.mean(list(areas_averages.values())) if areas_averages else 51
+        if overall_avg >= 80:
+            return 2  # Alto
+        elif overall_avg >= 65:
+            return 1  # Medio
+        else:
+            return 0  # Bajo
+    
+    def _calculate_chaside_consistency(self, test_answers):
+        """Calcula consistencia CHASIDE"""
+        scores = [
+            test_answers.score_c, test_answers.score_h, test_answers.score_a,
+            test_answers.score_s, test_answers.score_i, test_answers.score_d,
+            test_answers.score_e
+        ]
+        variance = np.var(scores)
+        max_variance = np.var([14, 0, 0, 0, 0, 0, 0])
+        return 1 - (variance / max_variance) if max_variance > 0 else 1
     
     def _generate_improved_rules_recommendations(self, student, test_answers, careers, top_n):
         """Genera recomendaciones con reglas MEJORADAS"""
