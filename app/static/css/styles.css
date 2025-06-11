@@ -1,0 +1,60 @@
+/* Estilos personalizados para la aplicación */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+/* Estilos para las cards */
+.card {
+    border-radius: 0.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+/* Estilos para botones */
+.btn {
+    border-radius: 0.3rem;
+}
+
+/* Estilos para el gráfico de resultados */
+#resultsChart {
+    min-height: 300px;
+}
+
+/* Estilos para barra de progreso del test */
+.progress {
+    height: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+    background-color: #0d6efd;
+}
+
+/* Estilos para las preguntas del test */
+.question-container {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1.5rem;
+    }
+}

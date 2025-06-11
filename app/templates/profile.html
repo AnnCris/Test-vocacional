@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Mi Perfil</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('main.profile') }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Información Personal</h3>
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ student.first_name or '' }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Apellido</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ student.last_name or '' }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="birth_date" class="form-label">Fecha de Nacimiento</label>
+                                <input type="date" class="form-control" id="birth_date" name="birth_date" value="{{ student.birth_date or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="grade" class="form-label">Grado</label>
+                                <select class="form-select" id="grade" name="grade" required>
+                                    <option value="">Seleccionar grado</option>
+                                    <option value="5to de secundaria" {% if student.grade == "5to de secundaria" %}selected{% endif %}>5to de secundaria</option>
+                                    <option value="6to de secundaria" {% if student.grade == "6to de secundaria" %}selected{% endif %}>6to de secundaria</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="school" class="form-label">Colegio</label>
+                                <input type="text" class="form-control" id="school" name="school" value="{{ student.school or '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>Rendimiento Académico</h3>
+                            <p class="text-muted">Registra tus calificaciones en escala del 1 al 10</p>
+                            
+                            <div class="mb-3">
+                                <label for="math_score" class="form-label">Matemáticas</label>
+                                <input type="number" class="form-control" id="math_score" name="math_score" min="1" max="10" step="0.1" value="{{ student.math_score or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="science_score" class="form-label">Ciencias</label>
+                                <input type="number" class="form-control" id="science_score" name="science_score" min="1" max="10" step="0.1" value="{{ student.science_score or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="language_score" class="form-label">Lenguaje</label>
+                                <input type="number" class="form-control" id="language_score" name="language_score" min="1" max="10" step="0.1" value="{{ student.language_score or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="social_science_score" class="form-label">Ciencias Sociales</label>
+                                <input type="number" class="form-control" id="social_science_score" name="social_science_score" min="1" max="10" step="0.1" value="{{ student.social_science_score or '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="arts_score" class="form-label">Arte</label>
+                                <input type="number" class="form-control" id="arts_score" name="arts_score" min="1" max="10" step="0.1" value="{{ student.arts_score or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 col-6 mx-auto mt-4">
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

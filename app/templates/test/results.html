@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultados del Test Vocacional{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Tus Resultados del Test Vocacional</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Test completado el {{ test_date.strftime('%d/%m/%Y') }}</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Perfil de Áreas</h3>
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <img src="{{ radar_chart }}" class="img-fluid" alt="Perfil de Áreas">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Compatibilidad de Carreras</h3>
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <img src="{{ bar_chart }}" class="img-fluid" alt="Compatibilidad de Carreras">
+                            </div>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+        </div>
+        
+        <h2 class="mt-5 mb-4">Carreras Recomendadas para Ti</h2>
+        
+        {% for recommendation in recommended_careers %}
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">{{ recommendation.career.name }}</h3>
+                    <span class="badge bg-primary fs-5">{{ recommendation.score|round|int }}% de compatibilidad</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4>Descripción</h4>
+                        <p>{{ recommendation.career.description }}</p>
+                        
+                        <h4>¿Por qué te recomendamos esta carrera?</h4>
+                        <p>{{ recommendation.explanation.recommendation_reason }}</p>
+                        
+                        <h4>Facultad</h4>
+                        <p>{{ recommendation.career.faculty.name }} - {{ recommendation.career.faculty.description }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Área principal: {{ recommendation.explanation.area_name }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>Intereses relacionados:</h6>
+                                <ul>
+                                    {% for interest in recommendation.explanation.interests[:5] %}
+                                    <li>{{ interest }}</li>
+                                    {% endfor %}
+                                </ul>
+                                
+                                <h6>Aptitudes requeridas:</h6>
+                                <ul>
+                                    {% for aptitude in recommendation.explanation.aptitudes[:5] %}
+                                    <li>{{ aptitude }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="mt-4">Carreras similares</h4>
+                <div class="row">
+                    {% for similar_career in recommendation.explanation.related_careers[:3] %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ similar_career }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="d-flex justify-content-center mt-4 mb-5">
+            <a href="{{ url_for('test.retake_test') }}">Volver a realizar el test</a>
+                <i class="fas fa-redo"></i> Volver a realizar el test
+            </a>
+            <a href="#" class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print"></i> Imprimir resultados
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('resultsChart').getContext('2d');
+        
+        const chart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Administrativas (C)', 
+                    'Humanísticas (H)', 
+                    'Artísticas (A)', 
+                    'Salud (S)', 
+                    'Ingenierías (I)', 
+                    'Defensa (D)', 
+                    'Científicas (E)'
+                ],
+                datasets: [{
+                    label: 'Tus resultados',
+                    data: [
+                        {{ scores['C'] }}, 
+                        {{ scores['H'] }}, 
+                        {{ scores['A'] }}, 
+                        {{ scores['S'] }}, 
+                        {{ scores['I'] }}, 
+                        {{ scores['D'] }}, 
+                        {{ scores['E'] }}
+                    ],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                scale: {
+                    ticks: {
+                        beginAtZero: true,
+                        max: 14
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

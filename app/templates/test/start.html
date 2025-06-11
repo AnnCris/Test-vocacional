@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Test Vocacional{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Test Vocacional CHASIDE</h2>
+            </div>
+            <div class="card-body">
+                <h3>Instrucciones</h3>
+                <p>El Test CHASIDE te ayudará a descubrir tus intereses y aptitudes vocacionales. A continuación, algunas instrucciones para completarlo:</p>
+                
+                <ol>
+                    <li>Se te presentarán 98 preguntas, una a una.</li>
+                    <li>Responde SÍ o NO a cada pregunta según tu preferencia personal.</li>
+                    <li>No existen respuestas correctas o incorrectas, solo tus preferencias.</li>
+                    <li>Responde con sinceridad para obtener resultados más precisos.</li>
+                    <li>No pienses demasiado cada respuesta, tu primera impresión suele ser la más acertada.</li>
+                </ol>
+                
+                <p>Al finalizar el test, nuestro sistema analizará tus respuestas y te ofrecerá recomendaciones de carreras universitarias basadas en tus intereses y aptitudes.</p>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> El test te tomará aproximadamente 15-20 minutos en completar.
+                </div>
+                
+                <div class="d-grid gap-2 col-6 mx-auto mt-4">
+                    <a href="{{ url_for('test.comenzar_test') }}" class="btn btn-primary btn-lg">Comenzar Test</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

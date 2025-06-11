@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Sistema de Recomendación de Carreras{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="img-fluid" style="max-width: 300px;">
+        </div>
+        <h1 class="text-center">Sistema de Recomendación de Carreras Universitarias</h1>
+        <p class="lead text-center">Descubre la carrera que mejor se adapta a tus habilidades e intereses</p>
+        <div class="d-grid gap-2 col-6 mx-auto mt-5">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('test.start_test') }}" class="btn btn-primary btn-lg">Realizar Test Vocacional</a>
+            {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Registrarse</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title">¿Cómo funciona?</h3>
+                <ol class="card-text">
+                    <li>Regístrate en nuestra plataforma</li>
+                    <li>Completa tu perfil académico</li>
+                    <li>Realiza el test vocacional CHASIDE</li>
+                    <li>Recibe recomendaciones de carreras personalizadas</li>
+                    <li>Explora información detallada sobre cada carrera recomendada</li>
+                </ol>
+                
+                <h3 class="card-title mt-4">Beneficios</h3>
+                <ul class="card-text">
+                    <li>Test vocacional científicamente validado</li>
+                    <li>Recomendaciones basadas en Machine Learning</li>
+                    <li>Información detallada sobre carreras y facultades</li>
+                    <li>Compatibilidad con tus habilidades y rendimiento académico</li>
+                    <li>Orientación profesional completa</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-brain fa-4x text-primary mb-3"></i>
+                <h4 class="card-title">Test CHASIDE</h4>
+                <p class="card-text">Evalúa tus intereses y aptitudes en siete áreas clave para determinar tu perfil vocacional.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-robot fa-4x text-primary mb-3"></i>
+                <h4 class="card-title">Machine Learning</h4>
+                <p class="card-text">Utilizamos algoritmos avanzados para analizar tus respuestas y encontrar las mejores coincidencias.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-4x text-primary mb-3"></i>
+                <h4 class="card-title">Análisis Académico</h4>
+                <p class="card-text">Consideramos tu rendimiento en diferentes materias para ofrecerte recomendaciones más precisas.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
